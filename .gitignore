@@ -1,0 +1,12 @@
+bin/
+obj/
+*.user
+*.suo
+*.exe
+*.dll
+*.pdb
+*.deps.json
+*.runtimeconfig.json
+.vs/
+.idea/
+*.DotSettings.user
