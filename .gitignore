@@ -1,5 +1,6 @@
 bin/
 obj/
+publish/
 *.user
 *.suo
 *.exe
@@ -7,6 +8,8 @@ obj/
 *.pdb
 *.deps.json
 *.runtimeconfig.json
+*.msi
+*.wixpdb
 .vs/
 .idea/
 *.DotSettings.user

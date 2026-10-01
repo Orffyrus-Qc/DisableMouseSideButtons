@@ -4,11 +4,15 @@ A tiny Windows tray app that swallows both mouse side buttons (XButton1 / XButto
 
 It uses a low-level mouse hook, so it applies to every mouse on the machine — browsers, File Explorer, and most desktop apps. No vendor software required.
 
+**[Download the installer (DisableMouseSideButtonsSetup.msi)](https://github.com/Orffyrus-Qc/DisableMouseSideButtons/releases/latest)**
+
+The installer is self-contained (no separate .NET runtime), adds a Start Menu shortcut, and starts the app at logon.
+
 ## Requirements
 
 - Windows
-- [.NET 9 SDK](https://dotnet.microsoft.com/download/dotnet/9.0) to build
-- [.NET 9 Desktop Runtime](https://dotnet.microsoft.com/download/dotnet/9.0) to run a framework-dependent build
+- [.NET 9 SDK](https://dotnet.microsoft.com/download/dotnet/9.0) to build from source
+- [WiX Toolset](https://wixtoolset.org/) v5 CLI to build the MSI
 
 ## Build and run
 
@@ -18,6 +22,17 @@ dotnet publish src/DisableMouseSideButtons.csproj -c Release -r win-x64 --self-c
 ```
 
 A shield icon appears in the notification area.
+
+### Building the installer
+
+```powershell
+dotnet tool install --global wix --version 5.0.2
+wix extension add WixToolset.UI.wixext/5.0.2
+wix extension add WixToolset.Util.wixext/5.0.2
+.\build-installer.ps1
+```
+
+The MSI is written to `installer/DisableMouseSideButtonsSetup.msi`.
 
 ## Tray
 

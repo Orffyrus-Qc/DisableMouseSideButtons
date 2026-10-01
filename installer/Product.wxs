@@ -1,0 +1,102 @@
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"
+     xmlns:ui="http://wixtoolset.org/schemas/v4/wxs/ui"
+     xmlns:util="http://wixtoolset.org/schemas/v4/wxs/util">
+
+  <Package Name="Disable Mouse Side Buttons"
+           Manufacturer="Orffyrus"
+           Version="1.0.0"
+           UpgradeCode="6feb2055-7e83-450b-a2fb-cd5a728ae953"
+           Compressed="yes"
+           Scope="perUserOrMachine">
+
+    <SummaryInformation Description="Windows tray app that disables mouse side buttons (Back/Forward)." />
+
+    <MajorUpgrade DowngradeErrorMessage="A newer version of Disable Mouse Side Buttons is already installed." />
+
+    <MediaTemplate EmbedCab="yes" />
+
+    <Icon Id="AppIcon.exe" SourceFile="..\publish\DisableMouseSideButtons.exe" />
+    <Property Id="ARPPRODUCTICON" Value="AppIcon.exe" />
+    <Property Id="ARPHELPLINK" Value="https://github.com/Orffyrus-Qc/DisableMouseSideButtons" />
+    <Property Id="ARPURLINFOABOUT" Value="https://github.com/Orffyrus-Qc/DisableMouseSideButtons" />
+
+    <WixVariable Id="WixUILicenseRtf" Value="License.rtf" />
+    <ui:WixUI Id="WixUI_Minimal" />
+
+    <Property Id="WIXUI_EXITDIALOGOPTIONALCHECKBOX" Value="1" />
+    <Property Id="WIXUI_EXITDIALOGOPTIONALCHECKBOXTEXT" Value="Launch Disable Mouse Side Buttons" />
+    <Property Id="WixShellExecTarget" Value="[#DisableMouseSideButtonsExe]" />
+    <CustomAction Id="LaunchApplication" BinaryRef="Wix4UtilCA_$(sys.BUILDARCHSHORT)" DllEntry="WixShellExec" Impersonate="yes" />
+    <UI>
+      <Publish Dialog="ExitDialog" Control="Finish" Event="DoAction" Value="LaunchApplication" Condition="WIXUI_EXITDIALOGOPTIONALCHECKBOX = 1 and NOT Installed" />
+    </UI>
+
+    <util:CloseApplication Id="CloseDisableMouseSideButtons"
+                           Target="DisableMouseSideButtons.exe"
+                           Description="Disable Mouse Side Buttons"
+                           CloseMessage="yes"
+                           RebootPrompt="no"
+                           TerminateProcess="1"
+                           Timeout="5" />
+
+    <StandardDirectory Id="ProgramFiles64Folder">
+      <Directory Id="INSTALLFOLDER" Name="Disable Mouse Side Buttons" />
+    </StandardDirectory>
+
+    <StandardDirectory Id="ProgramMenuFolder">
+      <Directory Id="AppProgramMenuFolder" Name="Disable Mouse Side Buttons" />
+    </StandardDirectory>
+
+    <StandardDirectory Id="StartupFolder" />
+
+    <ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
+      <Component Id="MainExecutable" Guid="e174812e-8474-4a6f-80e7-345c1ab7e87d">
+        <File Id="DisableMouseSideButtonsExe"
+              Source="..\publish\DisableMouseSideButtons.exe"
+              KeyPath="yes" />
+      </Component>
+    </ComponentGroup>
+
+    <ComponentGroup Id="ShortcutComponents" Directory="AppProgramMenuFolder">
+      <Component Id="StartMenuShortcut" Guid="45d2f492-ad63-4aeb-9736-817db68bce0d">
+        <Shortcut Id="AppStartMenuShortcut"
+                  Name="Disable Mouse Side Buttons"
+                  Description="Disable mouse side buttons (Back/Forward)"
+                  Target="[INSTALLFOLDER]DisableMouseSideButtons.exe"
+                  WorkingDirectory="INSTALLFOLDER"
+                  Icon="AppIcon.exe" />
+        <RemoveFolder Id="RemoveAppProgramMenuFolder" On="uninstall" />
+        <RegistryValue Root="HKCU"
+                       Key="Software\Orffyrus\DisableMouseSideButtons"
+                       Name="installed"
+                       Type="integer"
+                       Value="1"
+                       KeyPath="yes" />
+      </Component>
+    </ComponentGroup>
+
+    <ComponentGroup Id="StartupComponents" Directory="StartupFolder">
+      <Component Id="StartupShortcut" Guid="73bd6291-c6a4-460a-961d-b0849c0faaa2">
+        <Shortcut Id="AppStartupShortcut"
+                  Name="Disable Mouse Side Buttons"
+                  Description="Disable mouse side buttons at logon"
+                  Target="[INSTALLFOLDER]DisableMouseSideButtons.exe"
+                  WorkingDirectory="INSTALLFOLDER"
+                  Icon="AppIcon.exe" />
+        <RegistryValue Root="HKCU"
+                       Key="Software\Orffyrus\DisableMouseSideButtons"
+                       Name="startup"
+                       Type="integer"
+                       Value="1"
+                       KeyPath="yes" />
+      </Component>
+    </ComponentGroup>
+
+    <Feature Id="MainFeature" Title="Disable Mouse Side Buttons" Level="1">
+      <ComponentGroupRef Id="ProductComponents" />
+      <ComponentGroupRef Id="ShortcutComponents" />
+      <ComponentGroupRef Id="StartupComponents" />
+    </Feature>
+
+  </Package>
+</Wix>
